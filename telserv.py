@@ -60,7 +60,6 @@ class CommandLine:
                 style['blink'] = False
                 change = True
                 idx+=8
-                print('stringbb', stringbb[idx+9])
             if stringbb[idx:idx+7]=='[color=' and stringbb[idx+9]==']':
                 style['color'] = stringbb[idx+7:idx+9]
                 change = True
@@ -91,7 +90,9 @@ class CommandLine:
     def printbb(self, string):
         return self.print(self.bbtoans(string))
     def printfile(self, file):
-        return self.con.send(open(file, 'rb').read())
+        tmp = self.con.send(open(file, 'rb').read())
+        self.printnonew('\x1b[m')
+        return tmp
     def input(self, delim='\r\n'):
         stdin = ''
         length = len(delim)
@@ -134,3 +135,19 @@ class TelnetServer:
         os.system('telnet {}'.format(socket.gethostbyname(socket.gethostname())))
 def load(file):
     return open(file, 'r').read()
+if __name__ == '__main__':
+    def main(line):
+        line.print('line.print prints the text passed in as an argument, And it also supports ANSI sequences.')
+        line.printnonew('line.printnonew is the same as line.print, except it does not add the newline at the end.\r\n')
+        line.printbb('[b]line.printbb[/b] prints [b][color=31]BB[/color][color=34]code[/color]![/b]')
+        # line.printbbnonew is self-explanitory.
+        line.printfile('directory\\of\\ansi\\art.ans')
+        line.printbb('[b]Username: [color=31]')
+        username = line.input() # Take input and stop when recieving '\r\n' which is the return key. ( '\r\n' is the default if there's no argument. )
+        line.printbb('[/color]Password: [color=34]')
+        password = line.inputhidden('*') # Take input just like line.input() but display each character as an asterisk.
+        line.printbb('[/color][color=33]Logged in![/color]')
+    server = tel.TelnetServer(main)
+    server.start()
+    if input('Test BBS?')=='yes':
+        server.test()
