@@ -13,10 +13,11 @@ Usage
 
 #### Getting it
    ---
-TelServ can be installed via PiP.
+TelServ will be able to be installed via PiP like this:
 ```bash
-pip install telserv==0.1
+pip install telserv
 ```
+but for now, please just download the file because I'm having trouble with PiP.
 
 #### Using it
    ---
